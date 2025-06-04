@@ -1,0 +1,4 @@
+<h2>Admin Dashboard</h2>
+<p>Welcome, <%= current_user.email %>!</p>
+<%= link_to 'View Users', admin_users_path %>
+<%= link_to 'Log Out', logout_path, method: :delete %>

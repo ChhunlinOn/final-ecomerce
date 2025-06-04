@@ -232,13 +232,42 @@
   <!-- Load Flowbite JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 
-  <!-- JavaScript for active menu -->
+  <!-- JavaScript for active menu and Flowbite initialization -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Initialize Flowbite
+    function initializeAdminPanel() {
+      // Force initialize Flowbite
       if (typeof window.initFlowbite === 'function') {
         window.initFlowbite();
       }
+      
+      // Also manually bind the hamburger button as backup
+      const hamburgerButton = document.querySelector('[data-drawer-toggle="default-sidebar"]');
+      const sidebar = document.getElementById('default-sidebar');
+      const closeButton = document.querySelector('[data-drawer-dismiss="default-sidebar"]');
+      
+      if (hamburgerButton && sidebar) {
+        hamburgerButton.addEventListener('click', function() {
+          sidebar.classList.toggle('-translate-x-full');
+        });
+      }
+      
+      if (closeButton && sidebar) {
+        closeButton.addEventListener('click', function() {
+          sidebar.classList.add('-translate-x-full');
+        });
+      }
+      
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener('click', function(event) {
+        if (window.innerWidth < 640) {
+          const isClickInsideSidebar = sidebar && sidebar.contains(event.target);
+          const isClickOnHamburger = hamburgerButton && hamburgerButton.contains(event.target);
+          
+          if (!isClickInsideSidebar && !isClickOnHamburger && !sidebar.classList.contains('-translate-x-full')) {
+            sidebar.classList.add('-translate-x-full');
+          }
+        }
+      });
       
       function updateActiveMenuItem() {
         const currentPath = window.location.pathname;
@@ -290,16 +319,31 @@
       }
       
       updateActiveMenuItem();
-      
-      // Handle page navigation
-      if (typeof Turbo !== 'undefined') {
-        document.addEventListener('turbo:load', updateActiveMenuItem);
+    }
+
+    // Initialize on DOM content loaded
+    document.addEventListener('DOMContentLoaded', initializeAdminPanel);
+    
+    // Re-initialize on Turbo navigation (if using Turbo)
+    if (typeof Turbo !== 'undefined') {
+      document.addEventListener('turbo:load', initializeAdminPanel);
+      document.addEventListener('turbo:render', initializeAdminPanel);
+    }
+    
+    // Re-initialize on Turbolinks navigation (if using Turbolinks)
+    if (typeof Turbolinks !== 'undefined') {
+      document.addEventListener('turbolinks:load', initializeAdminPanel);
+    }
+    
+    // Re-initialize on popstate (browser back/forward)
+    window.addEventListener('popstate', initializeAdminPanel);
+    
+    // Force initialization after a short delay as backup
+    setTimeout(function() {
+      if (typeof window.initFlowbite === 'function') {
+        window.initFlowbite();
       }
-      if (typeof Turbolinks !== 'undefined') {
-        document.addEventListener('turbolinks:load', updateActiveMenuItem);
-      }
-      window.addEventListener('popstate', updateActiveMenuItem);
-    });
+    }, 100);
   </script>
 </body>
 </html>

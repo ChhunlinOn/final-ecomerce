@@ -9,10 +9,6 @@ Rails.application.routes.draw do
 
   # Admin routes
   namespace :admin do
-    # Admin root - redirect to dashboard
-    root 'dashboard#index'
-    
-    # Dashboard
     get 'dashboard', to: 'dashboard#index'
     
     # Users management

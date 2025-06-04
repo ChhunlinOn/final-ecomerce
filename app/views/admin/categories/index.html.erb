@@ -1,0 +1,41 @@
+<% content_for :title, "Categories" %>
+
+<div class="w-full px-4 sm:px-6 lg:px-8  ">
+  <% if notice.present? %>
+    <p class="py-3 px-4 bg-green-100 text-green-700 font-medium rounded-lg shadow-sm mb-6" id="notice">
+      <%= notice %>
+    </p>
+  <% end %>
+
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+    <h1 class="text-3xl font-extrabold text-gray-900">Categories</h1>
+    <%= link_to "New Category", new_admin_category_path, class: "inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 transition" %>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200 rounded-lg shadow-sm overflow-hidden bg-white">
+      <thead class="bg-gray-100">
+        <tr>
+          <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Name</th>
+          <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Name</th>
+          <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Description</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-blue-100">
+        <% @admin_categories.each do |c| %>
+          <tr class="hover:bg-gray-50 transition">
+          <td class="px-6 py-4 whitepsace-nowrap tex-sm font-medium text-gray-800 underline">
+          <%= c.image.present? ? image_tag(c.image.variant(:thumb)) : image_tag("https://via.placeholder.com/50") %>
+        </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700">
+              <%= link_to c.name, admin_category_path(c), class: "hover:underline" %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+              <%= c.description.presence || "-" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

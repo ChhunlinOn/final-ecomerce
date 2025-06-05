@@ -1,9 +1,14 @@
 class Admin::DashboardController < ApplicationController
   before_action :authenticate_user!
   before_action :ensure_admin!
+  layout 'admin'  # This tells Rails to use the admin layout instead of application layout
 
   def index
-    # Admin dashboard logic
+    # Dashboard stats and data
+    @users_count = User.count
+    @products_count = Product.count rescue 0
+    @orders_count = Order.count rescue 0
+    @recent_users = User.limit(5).order(created_at: :desc)
   end
 
   private

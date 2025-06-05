@@ -1,5 +1,5 @@
 class Client::HomeController < ApplicationController
   def index
-    # Client homepage logic
+    @main_categories = Category.take(4)
   end
 end

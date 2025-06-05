@@ -9,6 +9,11 @@ Rails.application.routes.draw do
 
   # Admin routes
   namespace :admin do
+
+    resources :products
+    resources :categories
+
+
     get 'dashboard', to: 'dashboard#index'
     
     # Users management

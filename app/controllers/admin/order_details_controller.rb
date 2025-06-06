@@ -38,13 +38,19 @@ class Admin::OrderDetailsController < ApplicationController
   # PATCH/PUT /admin/order_details/1 or /admin/order_details/1.json
   def update
     respond_to do |format|
-      if @admin_order_detail.update(admin_order_detail_params)
-        format.html { redirect_to @admin_order_detail, notice: "Order detail was successfully updated." }
-        format.json { render :show, status: :ok, location: @admin_order_detail }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @admin_order_detail.errors, status: :unprocessable_entity }
+    if @admin_order_detail.update(admin_order_detail_params)
+      # Also update the order status if provided and related order exists
+      if params[:order_status].present? && @admin_order_detail.orders_id.present?
+        order = Order.find_by(id: @admin_order_detail.orders_id)
+        order.update(order_status: params[:order_status].downcase) if order
       end
+
+      format.html { redirect_to @admin_order_detail, notice: "Order detail was successfully updated." }
+      format.json { render :show, status: :ok, location: @admin_order_detail }
+    else
+      format.html { render :edit, status: :unprocessable_entity }
+      format.json { render json: @admin_order_detail.errors, status: :unprocessable_entity }
+    end
     end
   end
 

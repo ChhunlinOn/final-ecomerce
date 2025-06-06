@@ -1,71 +1,160 @@
 <% content_for :title, "Order details" %>
 
 <div class="w-full">
-  <% if notice.present? %>
+    <% if notice.present? %>
     <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
+    <% end %>
 
-  <div class="flex justify-between items-center">
-    <h1 class="font-bold text-4xl">Order details</h1>
-  </div>
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="font-bold text-4xl">Order details</h1>
+    </div>
 
-  <div class="overflow-x-auto">
-    <table class="min-w-full divide-y divide-gray-200 rounded-lg shadow-sm overflow-hidden bg-white">
-      <thead class="bg-gray-100">
-        <tr>
-          <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Order ID</th>
-          <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Customer</th>
-          <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Product</th>
-          <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Quantity</th>
-          <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Price</th>
-          <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Status</th>
-          <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Actions</th>
-        </tr>
-      </thead>
-      <%
-=begin%>
- <tbody class="divide-y divide-blue-100">
-        <% if @admin_order_details %>
-          <% @admin_order_details.each do |admin_order_detail| %>
-            <tr class="hover:bg-gray-50 transition">
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                <%= admin_order_detail.order&.user&.email || "-" %>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                <%= admin_order_detail.variant_detail&.product&.name || "Product ##{admin_order_detail.variant_detail_id}" rescue "-" %>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                <%= admin_order_detail.quantity || "-" %>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                $<%= number_with_precision(admin_order_detail.price, precision: 2) rescue "-" %>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm">
-                <% status = admin_order_detail.status || "pending" %>
-                <span class="px-2 py-1 rounded-full text-xs font-medium
-                  <%= case status.downcase
-                      when 'completed' then 'bg-green-100 text-green-800'
-                      when 'processing' then 'bg-blue-100 text-blue-800'
-                      when 'shipped' then 'bg-purple-100 text-purple-800'
-                      when 'cancelled' then 'bg-red-100 text-red-800'
-                      when 'refunded' then 'bg-orange-100 text-orange-800'
-                      else 'bg-gray-100 text-gray-800'
-                      end %>">
-                  <%= status.capitalize %>
-                </span>
-              </td>
-            </tr>
-          <% end %>
-        <% else %>
-          <tr>
-            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
-              No order details found.
-            </td>
-          </tr>
-        <% end %>
-      </tbody> 
-<%
-=end%>
-    </table>
-  </div>
+    <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Order Status</th>
+                    <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Order ID</th>
+                    <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Product</th>
+                    <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Unit Price</th>
+                    <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Quantity</th>
+                    <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Total Price</th>
+                    <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-blue-100">
+                <% if @admin_order_details && @admin_order_details.any? %>
+                <% @admin_order_details.each do |admin_order_detail| %>
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        <% begin %>
+                        <% order_id = admin_order_detail.read_attribute(:orders_id) %>
+                        <% if order_id %>
+                        <% order = Order.find_by(id: order_id) %>
+                        <% if order %>
+                        <% status = order.order_status.to_s.downcase %>
+                        <% text_class = status == "paid" ? "text-green-600" : "text-red-600" %>
+                        <div class="font-medium <%= text_class %>">
+                            <%= order.order_status.capitalize %>
+                        </div>
+                        <div class="text-xs text-gray-500">Order ID: <%= order_id %></div>
+                        <% else %>
+                        Order #<%= order_id %> (Not Found)
+                        <% end %>
+                        <% else %>
+                        No Order
+                        <% end %>
+                        <% rescue => e %>
+                        Order #<%= order_id || "Unknown" %> (Error: <%= e.message %>)
+                        <% end %>
+                    </td>
+
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        <%=admin_order_detail.read_attribute(:orders_id) || "-" %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        <% begin %>
+                        <% product_id = admin_order_detail.read_attribute(:products_id) %>
+                        <% if product_id %>
+                        <% product = Product.find_by(id: product_id) %>
+                        <% if product %>
+                        <div class="font-medium"><%= product.name %></div>
+                        <div class="text-xs text-gray-500">ID: <%= product_id %></div>
+                        <% else %>
+                        Product #<%= product_id %> (Not Found)
+                        <% end %>
+                        <% else %>
+                        No Product
+                        <% end %>
+                        <% rescue %>
+                        Product #<%= product_id || "Unknown" %>
+                        <% end %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        <% begin %>
+                        <% product_id = admin_order_detail.read_attribute(:products_id) %>
+                        <% if product_id %>
+                        <% product = Product.find_by(id: product_id) %>
+                        <% if product && product.price %>
+                        $<%= number_with_precision(product.price / 100.0, precision: 2) %>
+                        <% else %>
+                        $0.00
+                        <% end %>
+                        <% else %>
+                        $0.00
+                        <% end %>
+                        <% rescue %>
+                        $0.00
+                        <% end %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        <span class="font-medium"><%= admin_order_detail.read_attribute(:qauntity) || 0 %></span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        <% begin %>
+                        <% product_id = admin_order_detail.read_attribute(:products_id) %>
+                        <% quantity = admin_order_detail.read_attribute(:qauntity) || 0 %>
+                        <% if product_id %>
+                        <% product = Product.find_by(id: product_id) %>
+                        <% if product && product.price %>
+                        <% total_price = (product.price * quantity) / 100.0 %>
+                        <span class="font-semibold text-green-600">$<%= number_with_precision(total_price, precision: 2) %></span>
+                        <% else %>
+                        <span class="font-semibold">$0.00</span>
+                        <% end %>
+                        <% else %>
+                        <span class="font-semibold">$0.00</span>
+                        <% end %>
+                        <% rescue %>
+                        <span class="font-semibold">$0.00</span>
+                        <% end %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        <div class="flex space-x-2">
+                            <%= link_to admin_order_detail_path(admin_order_detail), class: "text-blue-600 hover:text-blue-900", title: "View Details" do %>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            <% end %>
+                            <%= link_to edit_admin_order_detail_path(admin_order_detail), class: "text-green-600 hover:text-green-900", title: "Edit" do %>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            <% end %>
+                            <%= link_to admin_order_detail_path(admin_order_detail), method: :delete, 
+                      data: { confirm: "Are you sure you want to delete this order detail?" }, 
+                      class: "text-red-600 hover:text-red-900", title: "Delete" do %>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            <% end %>
+                        </div>
+                    </td>
+                </tr>
+                <% end %>
+                <% else %>
+                <tr>
+                    <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                        <div class="flex flex-col items-center">
+                            <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <p class="text-lg font-medium">No order details found</p>
+                            <p class="text-sm">Order details will appear here once they are created.</p>
+                        </div>
+                    </td>
+                </tr>
+                <% end %>
+            </tbody>
+        </table>
+    </div>
+
+    <% if @admin_order_details && @admin_order_details.any? %>
+    <div class="mt-6 flex justify-between items-center">
+        <p class="text-sm text-gray-600">
+            Showing <%= @admin_order_details.count %> order details
+        </p>
+    </div>
+    <% end %>
 </div>

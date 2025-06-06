@@ -12,4 +12,4 @@ User.create(email: 'user@example.com', password: 'password123', admin: false)
 User.create(email: 'kimer@gmail.com', password: 'password123', admin: false)
 
 
-Product.create()
+# Product.create()

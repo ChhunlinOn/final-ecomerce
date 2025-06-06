@@ -71,5 +71,8 @@ class Admin::CategoriesController < ApplicationController
     params.require(:category).permit(:name, :description,:image)
   end
   
+  def ensure_admin!
+    redirect_to admin_login_path, alert: 'Access denied.' unless current_user.admin?
+  end
     
 end

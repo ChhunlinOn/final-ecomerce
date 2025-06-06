@@ -68,4 +68,8 @@ class Admin::ProductsController < ApplicationController
     def admin_product_params
       params.require(:product).permit(:name,:description,:price,:category_id,:active)
     end
+
+    def ensure_admin!
+    redirect_to admin_login_path, alert: 'Access denied.' unless current_user.admin?
+  end
 end

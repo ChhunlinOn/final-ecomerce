@@ -9,12 +9,17 @@ Rails.application.routes.draw do
 
   # Admin routes
   namespace :admin do
+
     resources :varints
+
+  get 'login', to: 'sessions#new', as: :login
+  post 'login', to: 'sessions#create'
+  delete 'logout', to: 'sessions#destroy'
+
 
     resources :products
     resources :categories
-
-
+    root to: 'root#index'
     get 'dashboard', to: 'dashboard#index'
     
     # Users management

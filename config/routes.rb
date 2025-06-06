@@ -9,8 +9,6 @@ Rails.application.routes.draw do
 
   # Admin routes
   namespace :admin do
-
-    
     # Products management
     resources :products do
       member do
@@ -60,6 +58,7 @@ Rails.application.routes.draw do
   # Client-facing routes
   namespace :client do
     resources :categories, only: [:show]
+    resources :products, only: [:show]
     root 'home#index'
     get 'category', to: 'category/index'
     get 'home', to: 'home#index'

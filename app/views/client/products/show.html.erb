@@ -1,0 +1,33 @@
+<h1 class="text-4xl font-extrabold text-center mt-12 mb-12 text-gray-900">Product Details</h1>
+
+<div class="flex flex-col lg:flex-row justify-center items-start gap-20 px-4 lg:px-16 py-10">
+  <!-- Product Image -->
+  <div class="w-full max-w-md">
+    <div class="w-full h-[300px] bg-gray-100 overflow-hidden rounded-xl shadow-sm flex justify-center items-center">
+      <%= image_tag 'photo.jpg', class: 'h-full w-full object-cover' %>
+    </div>
+  </div>
+
+  <!-- Product Info -->
+  <div class="w-full max-w-lg">
+    <h1 class="text-3xl font-bold text-gray-800 uppercase mb-4"><%= @product.name %></h1>
+    <p class="text-2xl text-indigo-600 font-semibold mb-6">$<%= @product.price %></p>
+    <p class="text-md text-gray-700 mb-8 leading-relaxed"><%= @product.description %></p>
+
+    <!-- Size or other options -->
+    <div class="mb-8">
+      <p class="text-gray-900 font-medium mb-2">Size</p>
+      <!-- You can add size buttons/dropdowns here -->
+      <div class="flex gap-3">
+        <button class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">S</button>
+        <button class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">M</button>
+        <button class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">L</button>
+      </div>
+    </div>
+
+    <!-- Example Add to Cart -->
+    <button class="mt-6 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow transition duration-300">
+      Add to Cart
+    </button>
+  </div>
+</div>

@@ -4,15 +4,19 @@
   <%= link_to "Shop Now", client_root_path, class: "bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded" %>
 </div>
 
-<div class="flex flex-wrap justify-center mt-8 items-center gap-10"> 
+<div class="flex flex-wrap justify-center mt-8 items-stretch gap-10">
   <% @main_categories.each do |category| %>
-    <%= link_to client_category_path(category) do %>
-      <div class="flex flex-col mb-4">
-        <h2 class=" font-medium text-lg text-center mb-6"><%= category.name %></h2>
+    <%= link_to client_category_path(category), class: "w-full sm:w-72 md:w-80 lg:w-96" do %>
+      <div class="bg-white shadow-lg rounded-2xl p-8 h-full flex flex-col justify-center items-center hover:shadow-2xl transition duration-300 ease-in-out">
+        <h2 class="font-bold text-2xl text-indigo-700 text-center mb-4">
+          <%= category.name %>
+        </h2>
+        <p class="text-gray-500 text-center">Explore items in <%= category.name %> category</p>
       </div>
     <% end %>
   <% end %>
-</div> 
+</div>
+
 
 <div class="bg-gray-100 py-20 my-10">
   <div class="container mx-auto px-6">

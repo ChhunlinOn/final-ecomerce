@@ -10,6 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+ActiveRecord::Schema[8.0].define(version: 2025_06_05_142255) do
+=======
 ActiveRecord::Schema[8.0].define(version: 2025_06_05_085958) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
@@ -49,6 +51,36 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_05_085958) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "order_details", force: :cascade do |t|
+    t.integer "order_id"
+    t.integer "varain_detail_id"
+    t.integer "qauntity"
+    t.integer "price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "orders_id", null: false
+    t.bigint "products_id", null: false
+    t.index ["orders_id"], name: "index_order_details_on_orders_id"
+    t.index ["products_id"], name: "index_order_details_on_products_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.string "email_address"
+    t.integer "user_id"
+    t.string "order_email"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "order_address"
+    t.string "country"
+    t.string "city"
+    t.string "order_status"
+    t.string "mobile_phone"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "users_id", null: false
+    t.index ["users_id"], name: "index_orders_on_users_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -81,5 +113,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_05_085958) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "order_details", "orders", column: "orders_id"
+  add_foreign_key "order_details", "products", column: "products_id"
+  add_foreign_key "orders", "users", column: "users_id"
   add_foreign_key "products", "categories"
 end

@@ -9,9 +9,9 @@ Rails.application.routes.draw do
 
   # Admin routes
   namespace :admin do
-
+    resources :order_details
+    resources :orders
     resources :varints
-
   get 'login', to: 'sessions#new', as: :login
   post 'login', to: 'sessions#create'
   delete 'logout', to: 'sessions#destroy'

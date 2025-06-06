@@ -9,3 +9,7 @@
 #   end
 User.create(email: 'admin@example.com', password: 'password123', admin: true)
 User.create(email: 'user@example.com', password: 'password123', admin: false)
+User.create(email: 'kimer@gmail.com', password: 'password123', admin: false)
+
+
+Product.create()

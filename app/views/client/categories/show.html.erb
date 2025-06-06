@@ -1,25 +1,19 @@
-<h1>Category Show Page</h1>
-<div class="min-h-screen flex justify-center">
-  <div class="flex flex-wrap flex-col mt-6">
-    <h2 class="text-lg text-gray-800">Filter</h2>
-    <%= form_with url: category_path(@category), method: :get, class: "flex flex-col"  do |form| %>
-      <%= form.number_field :min, placeholder: "Min Price", class: "border border-gray-800 rounded-md p-2 w-32" %>
-      <%= form.number_field :max, placeholder: "Max Price", class: "border border-gray-800 rounded-md p-2 mt-2 w-32" %>
-      <%= form.submit "Filter", class: "bg-gray-800 text-white rounded-md p-2 mt-2 cursor-pointer" %>
-    <% end %>
-    <%= form_with url: category_path(@category), method: :get, class: "flex flex-col" do |form| %>
-      <%= form.submit "Clear", class: "bg-gray-800 text-white rounded-md p-2 mt-2 cursor-pointer" %>
-    <% end %>
-  </div>
-  <div class="flex flex-wrap mt-6 gap-10 flex-grow justify-center items-start">
+<h1 class="text-4xl font-extrabold text-center mt-12 mb-10 text-gray-900">Category show</h1>
+
+<div class="min-h-screen px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+  <div class="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
     <% if @products.empty? %>
-      <p class="text-2xl text-left text-gray-800">No products found</p>
+      <div class="col-span-full text-center py-16">
+        <p class="text-2xl text-gray-500">No products found in this category.</p>
+      </div>
     <% else %>
       <% @products.each do |product| %>
-        <%= link_to product_path(product) do %>
-          <div class="max-w-xs flex flex-col p-4 justify-center items-center">
-            <%= product.images.first ? image_tag(product.images.first.variant(:medium), class: "rounded") : image_tag("http://via.placeholder.com/250", class: "rounded") %>
-            <p class="mt-6 font-medium text-gray-800"><%= product.name %></p>
+        <%= link_to client_product_path(product), class: "group block bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300" do %>
+          <div class="w-full h-48 bg-gray-100 flex justify-center items-center">
+            <%= image_tag 'photo.jpg', class: 'h-full w-full object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out' %>
+          </div>
+          <div class="p-4 bg-gray-50 text-center">
+            <h3 class="text-lg font-semibold text-gray-800 group-hover:text-indigo-600 transition-colors duration-300"><%= product.name %></h3>
           </div>
         <% end %>
       <% end %>

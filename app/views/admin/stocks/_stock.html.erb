@@ -1,0 +1,6 @@
+<!-- app/views/admin/stocks/_stock.html.erb -->
+<div class="stock">
+  <p>Size: <%= stock.size %> | Amount: <%= stock.amount %></p>
+  <%= link_to "Edit", edit_admin_product_stock_path(stock.product, stock), class: "underline" %>
+  <%= link_to "Delete", admin_product_stock_path(stock.product, stock), method: :delete, data: { confirm: "Are you sure?" }, class: "underline text-red-500" %>
+</div>

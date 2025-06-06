@@ -9,13 +9,14 @@ Rails.application.routes.draw do
 
   # Admin routes
   namespace :admin do
+    root 'dashboard#index' # Added admin root route
 
-    resources :products
+    # Dashboard
+    get 'dashboard', to: 'dashboard#index'
+
+    # Categories management
     resources :categories
 
-
-    get 'dashboard', to: 'dashboard#index'
-    
     # Users management
     resources :users, only: [:index, :show] do
       member do
@@ -23,15 +24,12 @@ Rails.application.routes.draw do
         patch :deactivate
       end
     end
-    
+
     # Products management
     resources :products do
-      member do
-        patch :publish
-        patch :unpublish
-      end
+      resources :stocks
     end
-    
+
     # Orders management
     resources :orders do
       member do
@@ -40,7 +38,7 @@ Rails.application.routes.draw do
         patch :ship
       end
     end
-    
+
     # Settings
     get 'settings', to: 'settings#index'
     get 'settings/edit', to: 'settings#edit'

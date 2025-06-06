@@ -60,7 +60,8 @@ class Admin::ProductsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_admin_product
-      @admin_product = Product.find(params[:id])
+      @product = Product.find(params[:product_id])
+
     end
 
     # Only allow a list of trusted parameters through.

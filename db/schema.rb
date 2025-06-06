@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+ActiveRecord::Schema[8.0].define(version: 2025_06_06_015350) do
+
 ActiveRecord::Schema[8.0].define(version: 2025_06_05_142255) do
-=======
-ActiveRecord::Schema[8.0].define(version: 2025_06_05_085958) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -92,21 +93,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_05_085958) do
     t.index ["category_id"], name: "index_products_on_category_id"
   end
 
+  create_table "stocks", force: :cascade do |t|
+    t.string "size"
+    t.integer "amount"
+    t.bigint "product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_stocks_on_product_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
     t.boolean "admin"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "varints", force: :cascade do |t|
-    t.integer "price"
-    t.string "size"
-    t.string "stockin"
-    t.string "stockout"
-    t.string "product_id"
-    t.string "referance"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -117,4 +116,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_05_085958) do
   add_foreign_key "order_details", "products", column: "products_id"
   add_foreign_key "orders", "users", column: "users_id"
   add_foreign_key "products", "categories"
+  add_foreign_key "stocks", "products"
 end

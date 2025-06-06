@@ -9,15 +9,21 @@ Rails.application.routes.draw do
 
   # Admin routes
   namespace :admin do
-
-    resources :varints
+ 
+    
+    # Products management
+    resources :products do
+      member do
+        patch :publish
+        patch :unpublish
+      end
+      resources :stocks
+    end
 
   get 'login', to: 'sessions#new', as: :login
   post 'login', to: 'sessions#create'
   delete 'logout', to: 'sessions#destroy'
-
-
-    resources :products
+  
     resources :categories
     root to: 'root#index'
     get 'dashboard', to: 'dashboard#index'
@@ -29,23 +35,9 @@ Rails.application.routes.draw do
         patch :deactivate
       end
     end
-    
-    # Products management
-    resources :products do
-      member do
-        patch :publish
-        patch :unpublish
-      end
-    end
 
-    resources :products do
-      member do
-        patch :publish
-        patch :unpublish
-      end
-    end
     
-    # Orders management
+   
     resources :orders do
       member do
         patch :fulfill
@@ -54,7 +46,7 @@ Rails.application.routes.draw do
       end
     end
  
-    
+
     
     # Settings
     get 'settings', to: 'settings#index'

@@ -7,7 +7,8 @@ class Admin::DashboardController < ApplicationController
     # Dashboard stats and data
     @users_count = User.count
     @products_count = Product.count rescue 0
-    @orders_count = Order.count rescue 0
+    @category_count = Category.count rescue 0
+    @orders_count = Order.where(order_status: 'paid').count rescue 0
     @recent_users = User.limit(5).order(created_at: :desc)
   end
 
@@ -17,3 +18,4 @@ class Admin::DashboardController < ApplicationController
     redirect_to admin_login_path, alert: 'Access denied.' unless current_user.admin?
   end
 end
+

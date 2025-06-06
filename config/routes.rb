@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
   # Admin routes
   namespace :admin do
+    resources :order_details
     resources :orders
   get 'login', to: 'sessions#new', as: :login
   post 'login', to: 'sessions#create'

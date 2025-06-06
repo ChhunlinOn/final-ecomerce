@@ -1,3 +1,3 @@
-class Admin::Order < ApplicationRecord
-  self.table_name = 'orders'
+class Order < ApplicationRecord
+  self.table_name = "orders"
 end

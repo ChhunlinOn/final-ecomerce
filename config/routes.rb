@@ -11,10 +11,11 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :order_details
     resources :orders
+    resources :varints
   get 'login', to: 'sessions#new', as: :login
   post 'login', to: 'sessions#create'
   delete 'logout', to: 'sessions#destroy'
-  get 'dashboard', to: 'dashboard#index'
+
 
     resources :products
     resources :categories
@@ -36,6 +37,13 @@ Rails.application.routes.draw do
         patch :unpublish
       end
     end
+
+    resources :products do
+      member do
+        patch :publish
+        patch :unpublish
+      end
+    end
     
     # Orders management
     resources :orders do
@@ -45,6 +53,8 @@ Rails.application.routes.draw do
         patch :ship
       end
     end
+ 
+    
     
     # Settings
     get 'settings', to: 'settings#index'
@@ -54,7 +64,9 @@ Rails.application.routes.draw do
 
   # Client-facing routes
   namespace :client do
+    resources :categories, only: [:show]
     root 'home#index'
+    get 'category', to: 'category/index'
     get 'home', to: 'home#index'
     get 'profile', to: 'profile#show'
     get 'profile/edit', to: 'profile#edit'

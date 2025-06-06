@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
   # Admin routes
   namespace :admin do
- 
+
     
     # Products management
     resources :products do
@@ -19,6 +19,9 @@ Rails.application.routes.draw do
       end
       resources :stocks
     end
+
+    resources :order_details
+    resources :orders
 
   get 'login', to: 'sessions#new', as: :login
   post 'login', to: 'sessions#create'

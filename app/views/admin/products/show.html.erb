@@ -1,18 +1,77 @@
-<% content_for :title, "Showing product" %>
+<% content_for :title, "Product Detail ##{@admin_product.id}" %>
 
-<div class="md:w-2/3 w-full mx-auto">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
+<!-- Header -->
+<div class="mb-8">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 mb-2">Product Detail #<%= @admin_product.id %></h1>
+      <p class="text-sm text-gray-600">Detailed information about this product</p>
+    </div>
 
-  <h1 class="font-bold text-4xl mb-6">Product Details</h1>
-
-
-
-<%= render @admin_product %>
-
-  <%= link_to "Edit this product", edit_admin_product_path(@admin_product) , class: "w-full sm:w-auto text-center rounded-md p-2 bg-green-600 hover:bg-green-50 text-white inline-block font-medium" %>
-  <%= link_to "Back to products", admin_products_path, class: "w-full sm:w-auto text-center sm:mt-0 sm:ml-2 text-white rounded-md p-2 bg-gray-600 hover:bg-gray-300 inline-block font-medium" %>
-  <%= button_to "Destroy this product", [:admin, (@admin_product)], method: :delete, form_class: "inline", class: "w-full sm:w-auto text-center sm:mt-0 sm:ml-2 text-white rounded-md p-2  inline-block font-medium btn btn-danger bg-red-600 hover:bg-red-300 text-white ", data: { turbo_confirm: "Are you sure?" } %>
-
+    <div class="flex flex-wrap gap-2">
+      <%= link_to admin_products_path, class: "inline-flex items-center px-3 py-1.5 bg-gray-600 text-sm text-white rounded-lg hover:bg-gray-700 transition-colors" do %>
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to List
+      <% end %>
+    </div>
+  </div>
 </div>
+
+<!-- Main Info Box -->
+<div class="bg-white rounded-xl shadow-lg border border-gray-200">
+  <div class="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 border-b border-gray-200">
+    <h2 class="text-xl font-semibold text-gray-900 mb-1">Product Information</h2>
+    <p class="text-sm text-gray-700">Overview of product name, description, price, status, and timestamps.</p>
+  </div>
+
+  <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <dt class="text-xs font-semibold text-gray-500 uppercase mb-1">ID</dt>
+      <dd class="text-sm font-medium text-gray-900 bg-gray-50 px-3 py-2 rounded-lg">
+        #<%= @admin_product.id %>
+      </dd>
+    </div>
+
+    <div>
+      <dt class="text-xs font-semibold text-gray-500 uppercase mb-1">Name</dt>
+      <dd class="text-sm font-medium text-gray-900 bg-gray-50 px-3 py-2 rounded-lg">
+        <%= @admin_product.name %>
+      </dd>
+    </div>
+
+    <div>
+      <dt class="text-xs font-semibold text-gray-500 uppercase mb-1">Category</dt>
+      <dd class="text-sm font-medium text-gray-900 bg-gray-50 px-3 py-2 rounded-lg">
+        <%= @admin_product.category&.name || "Uncategorized" %>
+      </dd>
+    </div>
+
+    <div>
+      <dt class="text-xs font-semibold text-gray-500 uppercase mb-1">Price</dt>
+      <dd class="text-sm font-medium text-gray-900 bg-gray-50 px-3 py-2 rounded-lg">
+        $<%= @admin_product.price %>
+      </dd>
+    </div>
+
+    <div>
+      <dt class="text-xs font-semibold text-gray-500 uppercase mb-1">Status</dt>
+      <dd class="text-sm font-semibold <%= @admin_product.active ? 'text-green-600' : 'text-red-600' %> bg-gray-50 px-3 py-2 rounded-lg">
+        <%= @admin_product.active ? "Active" : "Inactive" %>
+      </dd>
+    </div>
+
+    <div>
+  
+
+    <div class="md:col-span-2">
+      <dt class="text-xs font-semibold text-gray-500 uppercase mb-1">Description</dt>
+      <dd class="text-sm text-gray-700 bg-gray-50 px-3 py-2 rounded-lg">
+        <%= @admin_product.description.presence || "No description provided." %>
+      </dd>
+    </div>
+  </div>
+</div>
+
+

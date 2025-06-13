@@ -3,12 +3,12 @@ default: &default
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: postgres
-  password: lin097
+  password: er12345
   host: localhost
 
 development:
   <<: *default
-  database: ecomerces2
+  database: ecom_db
 
 test:
   <<: *default

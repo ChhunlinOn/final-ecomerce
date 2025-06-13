@@ -1,78 +1,62 @@
 class Admin::CategoriesController < ApplicationController
-  before_action :set_admin_category, only: %i[ show edit update destroy ]
+  before_action :set_category, only: [:edit, :update, :destroy]
   layout 'admin'
-
-
-  # GET /admin/categories or /admin/categories.json
   def index
     @admin_categories = Category.all
+    @category = Category.new
   end
 
-  # GET /admin/categories/1 or /admin/categories/1.json
   def show
+    @category = Category.find(params[:id])
   end
 
-  # GET /admin/categories/new
   def new
-    @admin_category = Category.new
+    @category = Category.new
   end
 
-  # GET /admin/categories/1/edit
+  def create
+    @category = Category.new(category_params)
+    respond_to do |format|
+      if @category.save
+        format.turbo_stream
+        format.html { redirect_to categories_path, notice: "Category created." }
+      else
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("category_form", partial: "form", locals: { category: @category }) }
+        format.html { render :new, status: :unprocessable_entity }
+      end
+    end
+  end
+
   def edit
   end
 
-  # POST /admin/categories or /admin/categories.json
-  def create
-    @admin_category = Category.new(admin_category_params)
-
-    respond_to do |format|
-      if @admin_category.save
-        format.html { redirect_to [:admin, @admin_category], notice: "Category was successfully created." }
-        format.json { render :show, status: :created, location: @admin_category }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @admin_category.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /admin/categories/1 or /admin/categories/1.json
   def update
     respond_to do |format|
-      if @admin_category.update(admin_category_params)
-        format.html { redirect_to [:admin, @admin_category], notice: "Category was successfully updated."}
-        format.json { render :show, status: :ok, location: @admin_category }
+      if @category.update(category_params)
+        format.turbo_stream
+        format.html { redirect_to categories_path, notice: "Category updated." }
       else
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("category_form_#{@category.id}", partial: "form", locals: { category: @category }) }
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @admin_category.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # DELETE /admin/categories/1 or /admin/categories/1.json
   def destroy
-    @admin_category.destroy!
-  
+    @category.destroy
     respond_to do |format|
-      format.html { redirect_to admin_categories_path, status: :see_other, notice: "Category was successfully destroyed." }
-      format.json { head :no_content }
+      format.turbo_stream
+      format.html { redirect_to categories_path, notice: "Category deleted." }
     end
   end
-  
+
   private
-  
-  # Use callbacks to share common setup or constraints between actions.
-  def set_admin_category
-    @admin_category = Category.find(params[:id])
+
+  def set_category
+    @category = Category.find(params[:id])
   end
-  
-  # Only allow a list of trusted parameters through.
-  def admin_category_params
-    params.require(:category).permit(:name, :description,:image)
+
+  def category_params
+    params.require(:category).permit(:name)
   end
-  
-  def ensure_admin!
-    redirect_to admin_login_path, alert: 'Access denied.' unless current_user.admin?
-  end
-    
 end

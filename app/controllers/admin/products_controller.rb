@@ -1,13 +1,14 @@
 class Admin::ProductsController < ApplicationController
   layout 'admin'
-  before_action :set_admin_product, only: %i[ show edit update destroy ]
+  before_action :ensure_admin!
+  before_action :set_admin_product, only: %i[show edit update destroy]
 
-  # GET /admin/products or /admin/products.json
+  # GET /admin/products
   def index
     @admin_products = Product.all
   end
 
-  # GET /admin/products/1 or /admin/products/1.json
+  # GET /admin/products/1
   def show
   end
 
@@ -20,7 +21,7 @@ class Admin::ProductsController < ApplicationController
   def edit
   end
 
-  # POST /admin/products or /admin/products.json
+  # POST /admin/products
   def create
     @admin_product = Product.new(admin_product_params)
   
@@ -35,7 +36,7 @@ class Admin::ProductsController < ApplicationController
     end
   end
   
-  # PATCH/PUT /admin/products/1 or /admin/products/1.json
+  # PATCH/PUT /admin/products/1
   def update
     respond_to do |format|
       if @admin_product.update(admin_product_params)
@@ -48,7 +49,7 @@ class Admin::ProductsController < ApplicationController
     end
   end
 
-  # DELETE /admin/products/1 or /admin/products/1.json
+  # DELETE /admin/products/1
   def destroy
     @admin_product.destroy!
 
@@ -59,17 +60,16 @@ class Admin::ProductsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_admin_product
-      @admin_product = Product.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def admin_product_params
-      params.require(:product).permit(:name,:description,:price,:category_id,:active)
-    end
+  def set_admin_product
+    @admin_product = Product.find(params[:id])
+  end
 
-    def ensure_admin!
-    redirect_to admin_login_path, alert: 'Access denied.' unless current_user.admin?
+  def admin_product_params
+    params.require(:product).permit(:name, :description, :price, :category_id, :active)
+  end
+
+  def ensure_admin!
+    redirect_to admin_login_path, alert: 'Access denied.' unless current_user&.admin?
   end
 end

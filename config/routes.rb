@@ -1,15 +1,18 @@
 Rails.application.routes.draw do
-  # Sessions
+  # Sessions (non-namespaced)
   get 'login', to: 'sessions#new'
   post 'login', to: 'sessions#create'
   delete 'logout', to: 'sessions#destroy'
 
-  # Root
+  # Root path for the whole app (client-facing root)
   root 'client/home#index'
 
-  # Admin routes
+  # Admin namespace
   namespace :admin do
-    # Products management
+    root to: 'root#index'
+    get 'dashboard', to: 'dashboard#index'
+
+    # Products with nested stocks and member actions
     resources :products do
       member do
         patch :publish
@@ -18,27 +21,10 @@ Rails.application.routes.draw do
       resources :stocks
     end
 
+    # Order details resource
     resources :order_details
-    resources :orders
 
-  get 'login', to: 'sessions#new', as: :login
-  post 'login', to: 'sessions#create'
-  delete 'logout', to: 'sessions#destroy'
-  
-    resources :categories
-    root to: 'root#index'
-    get 'dashboard', to: 'dashboard#index'
-    
-    # Users management
-    resources :users, only: [:index, :show] do
-      member do
-        patch :activate
-        patch :deactivate
-      end
-    end
-
-    
-   
+    # Orders with member patch actions
     resources :orders do
       member do
         patch :fulfill
@@ -46,22 +32,34 @@ Rails.application.routes.draw do
         patch :ship
       end
     end
- 
 
-    
-    # Settings
+    # Categories resource
+    resources :categories
+
+    # Users with limited actions and member patch actions
+    resources :users, only: [:index, :show] do
+      member do
+        patch :activate
+        patch :deactivate
+      end
+    end
+
+    # Settings routes
     get 'settings', to: 'settings#index'
     get 'settings/edit', to: 'settings#edit'
     patch 'settings', to: 'settings#update'
   end
 
-  # Client-facing routes
+  # Client-facing namespace
   namespace :client do
     resources :categories, only: [:show]
     resources :products, only: [:show]
+
     root 'home#index'
-    get 'category', to: 'category/index'
+
+    get 'category', to: 'category#index'  # fixed typo here
     get 'home', to: 'home#index'
+
     get 'profile', to: 'profile#show'
     get 'profile/edit', to: 'profile#edit'
     patch 'profile', to: 'profile#update'
